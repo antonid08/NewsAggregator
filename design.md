@@ -30,7 +30,16 @@ _app_ module is planned to be small, so it's suitable to organize packages by Cl
     * local
 
 ## Error handling and fault tolerance
-TBD
+Modern approach for errors handling is to try to process all possible errors UX-friendly (show error messages and not to crash). Current application will follow this approach. 
+
+Also, we want to implement errors handling without much effort. In Kotlin all exceptions are unchecked and it can help us.  
+Hovewer, since exceptions are not checked, we don't know which exceptions are thrown by every methods, but we still need to handle them somewhere. Since the aplication follows Clean Architecture, it has well-defined structure and data flow. We can consider this and create several rules that allows to handle most of errors properly.   
+Rules are:
+* All domain and data methods should use throw unchecked exceptions in any exceptional situation. 
+* Throwed exceptions should correspond abstraction level of the throwing class and contain all required technical information. 
+* When UI layer calls domain layer, it doesn't care about possible exception types. All domain calls are wrapped in `runCatching` block. Default handling is: inform user about error if required and log the exception.  
+
+This approach has disadvantage: if we want to process different types of exceptions in different ways, there might be a problem. E.g. if we want to log to Firebase (or its analog) all exceptions except of network-related. This will require additional design and effort, but that's the price that we pay for convenience.
 
 # News feature design
 ## Data
