@@ -42,10 +42,14 @@ Rules are:
 This approach has disadvantage: if we want to process different types of exceptions in different ways, there might be a problem. E.g. if we want to log to Firebase (or its analog) all exceptions except of network-related. This will require additional design and effort, but that's the price that we pay for convenience.
 
 # News feature design
-## Data
-TBD
-## Paging
-TBD
+## Data and Paging
+Data sources are encapsulated to _*DataStore_ classes. So we don't care which protocol are used.  
+Main challenge with pagination here is that all data stores can provide different pagination mechanisms. It should be encapsulatet: domain layer should provide unified pagination API. 
+**Pagination by date** looks the most suitable for our purposes. Every news have a date. Even if original data source doesn't provide such pagination, we can use its pagination mechanism and make requests until receive data with appropriate dates. 
+
+Other questions are how to pass data to UI and where to store it. 
+We need persistense storage for caching. Most common solution is to have such cache in database (we don't consider exotic solutions like save JSON in shared prefetences, use plain text files, etc). In our applciation there is no need to choose database by speed and weight. Only convenient API matters in this case. I prefer **Room** ORM because it looks really simple. 
+
 ## Errors handling
 TBD
 ## Background check for updates
