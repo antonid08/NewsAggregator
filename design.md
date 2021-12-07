@@ -48,10 +48,21 @@ Main challenge with pagination here is that all data stores can provide differen
 **Pagination by date** looks the most suitable for our purposes. Every news have a date. Even if original data source doesn't provide such pagination, we can use its pagination mechanism and make requests until receive data with appropriate dates. 
 
 Other questions are how to pass data to UI and where to store it. 
-We need persistense storage for caching. Most common solution is to have such cache in database (we don't consider exotic solutions like save JSON in shared prefetences, use plain text files, etc). In our applciation there is no need to choose database by speed and weight. Only convenient API matters in this case. I prefer **Room** ORM because it looks really simple. 
+We need persistense storage for caching. Most common solution is to have such cache in database (we don't consider exotic solutions like save JSON in shared prefetences, use plain text files, etc). In our applciation there is no need to choose database by speed and weight. Only convenient API matters in this case. I prefer **Room** ORM because it looks really simple.  
+
+Now we need to define the source of truth. Need to respect these limitations: 
+1) Cache size is restricted
+2) We want to achieve good performance even for big lists.  
+It means that we can't just translate news flow from the database to the UI (dataabase size is restricted, DiffUtil can work slow for big lists).  
+
+Good solution here is to save all newest data to database for caching, and provide such API: `Repository.loadPage(date): List<New>`. UI can just append update to the list.  
+I think `MVP` UI pattern is more suitable for such design, but we can also use `MVVM` here. We'll use `MVVM` because it's more common.
 
 ## Errors handling
-TBD
+Since there are several data sources, i suppose we can just hide network errors from the user. Error will be shown only if all data requests failed.
+
 ## Background check for updates
-TBD
+Background updates should be encapsulated as additional data sources. There will be interactors to provide `subscribe` and `unsubscribe` functionality. We still need to call these methods somewhere in the core component. It can be lifecycle callbacks of the root `Activity` or `Application`. 
+
 ## Main classes 
+
