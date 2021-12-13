@@ -65,4 +65,10 @@ Since there are several data sources, i suppose we can just hide network errors 
 Background updates should be encapsulated as additional data sources. There will be interactors to provide `subscribe` and `unsubscribe` functionality. We still need to call these methods somewhere in the core component. It can be lifecycle callbacks of the root `Activity` or `Application`. 
 
 ## Main classes 
+### Data layer
+![Data layer class diagram](data_layer_class_diagram.drawio.png)
+### UI layer
+![UI layer class diagram](ui_layer_class_diagram.drawio.png)
+### Domain layer
+![Domain layer class diagram](domain_layer_class_diagram.drawio.png)
 
