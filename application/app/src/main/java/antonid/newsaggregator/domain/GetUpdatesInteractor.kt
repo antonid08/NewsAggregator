@@ -1,9 +1,9 @@
 package antonid.newsaggregator.domain
 
 import antonid.newsaggregator.domain.utils.Interactor
+import antonid.newsaggregator.domain.utils.SuspendInteractor
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.*
 
 /**
  * Returns flow that emit when fresh articles are available
@@ -12,18 +12,17 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  */
 class GetUpdatesInteractor(
     private val repository: ArticlesRepository,
-    private val updatesIntervalMs: Long = 60_000_000L,
+    private val updatesIntervalMs: Long = 60_000L,
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default),
 ): Interactor<Flow<Unit>> {
-
-    private val updatesScope = CoroutineScope(Dispatchers.Default)
 
     private val updatesFlow = MutableSharedFlow<Unit>()
 
     override fun execute(): Flow<Unit> {
-        updatesScope.launch {
+        scope.launch {
             while (isActive) {
-                checkUpdates()
                 delay(updatesIntervalMs)
+                checkUpdates()
             }
         }
 
