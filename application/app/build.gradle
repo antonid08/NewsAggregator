@@ -6,6 +6,11 @@ plugins {
 android {
     compileSdk 31
 
+
+    def apiPropertiesFile = rootProject.file("api.properties")
+    def apiProperties = new Properties()
+    apiProperties.load(new FileInputStream(apiPropertiesFile))
+
     defaultConfig {
         applicationId "antonid.newsaggregator"
         minSdk 21
@@ -14,6 +19,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "NEWSAPI_ORG_BASE_URL", apiProperties['NEWSAPI_ORG_BASE_URL'])
+        buildConfigField("String", "NEWSAPI_ORG_API_KEY", apiProperties['NEWSAPI_ORG_API_KEY'])
+
     }
 
     buildTypes {
@@ -39,6 +48,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
 
 
 

@@ -2,7 +2,6 @@ package antonid.newsaggregator.data
 
 import antonid.newsaggregator.data.local.ArticlesLocalDataSource
 import antonid.newsaggregator.data.remote.ArticlesRemoteRepository
-import antonid.newsaggregator.data.remote.MediaStackComRemoteDataSource
 import antonid.newsaggregator.domain.ArticlesRepository
 import antonid.newsaggregator.domain.model.Article
 
