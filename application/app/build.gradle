@@ -22,6 +22,8 @@ android {
 
         buildConfigField("String", "NEWSAPI_ORG_BASE_URL", apiProperties['NEWSAPI_ORG_BASE_URL'])
         buildConfigField("String", "NEWSAPI_ORG_API_KEY", apiProperties['NEWSAPI_ORG_API_KEY'])
+        buildConfigField("String", "THE_NEWS_API_COM_BASE_URL", apiProperties['THE_NEWS_API_COM_BASE_URL'])
+        buildConfigField("String", "THE_NEWS_API_COM_API_KEY", apiProperties['THE_NEWS_API_COM_API_KEY'])
 
     }
 

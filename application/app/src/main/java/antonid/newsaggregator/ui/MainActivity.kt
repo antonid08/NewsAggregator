@@ -9,7 +9,10 @@ import antonid.newsaggregator.data.remote.ArticlesRemoteRepository
 import antonid.newsaggregator.data.remote.newsapi.converter.NewsApiArticleRetrofitConverter
 import antonid.newsaggregator.data.remote.newsapi.NewsApiOrgRemoteDataSource
 import antonid.newsaggregator.data.remote.newsapi.retrofit.NewsApiProvider
+import antonid.newsaggregator.data.remote.newsapi.retrofit.NewsApiProvider.api
 import antonid.newsaggregator.data.remote.newsdata.NewsDataIoRemoteDataSource
+import antonid.newsaggregator.data.remote.newsdata.converter.TheNewsApiComArticleRetrofitConverter
+import antonid.newsaggregator.data.remote.newsdata.retrofit.TheNewsApiComApiProvider
 import antonid.newsaggregator.domain.LoadArticlesInteractor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,11 +29,15 @@ class MainActivity : AppCompatActivity() {
 
         // this block is only for testing. it will be removed.
         coroutineScope.launch {
+            NewsDataIoRemoteDataSource(TheNewsApiComApiProvider.api, TheNewsApiComArticleRetrofitConverter())
+                .getNews(Calendar.getInstance().timeInMillis, 10)
+        }
+/*        coroutineScope.launch {
             val articlesRepository = ArticlesRepositoryImpl(ArticlesRemoteRepository(
                 NewsApiOrgRemoteDataSource(NewsApiProvider.api, NewsApiArticleRetrofitConverter()),
-                NewsDataIoRemoteDataSource()
+                NewsDataIoRemoteDataSource(TheNewsApiComApiProvider.api, TheNewsApiComArticleRetrofitConverter())
             ), ArticlesLocalDataSource())
             val articles = LoadArticlesInteractor(Calendar.getInstance().timeInMillis, 10, articlesRepository).execute()
-        }
+        }*/
     }
 }
