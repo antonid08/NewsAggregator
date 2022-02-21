@@ -6,18 +6,18 @@ import antonid.newsaggregator.domain.model.Article
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NewsDataIoRemoteDataSource(
-    private val newsApiComApi: TheNewsApiComApi,
-    private val newsApiArticleArticleRetrofitConverter: TheNewsApiComArticleRetrofitConverter,
+class TheNewsApiComRemoteDataSource(
+    private val theNewsApiComApi: TheNewsApiComApi,
+    private val theNewsApiArticleArticleRetrofitConverter: TheNewsApiComArticleRetrofitConverter,
 ) {
 
-    suspend fun getNews(timestamp: Long, count: Int): List<Article> {
+    suspend fun getNews(timestamp: Long, count: Int): List<Article> { //todo use count
         val dateTo =
             SimpleDateFormat(THE_NEWS_API_COM_DATE_FORMAT, Locale.getDefault()).format(Date(timestamp))
-        val response = newsApiComApi.getAll(dateTo, "en")
+        val response = theNewsApiComApi.getAll(dateTo, "en")
 
         if (response.isSuccessful && response.body()?.data != null) {
-            return response.body()!!.data!!.map(newsApiArticleArticleRetrofitConverter::convert)
+            return response.body()!!.data!!.map(theNewsApiArticleArticleRetrofitConverter::convert)
         } else {
             throw Exception("TheNewsApiCom 'getAll' network call failed. Response: '$response'. " +
                     "Error body: ${response.errorBody()}")
