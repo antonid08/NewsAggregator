@@ -7,7 +7,7 @@ package antonid.newsaggregator.domain.model
  */
 data class Article(
    val title: String,
-   val imageUrl: String,
+   val imageUrl: String?,
    val source: String,
    val publishTimestamp: Long,
 )

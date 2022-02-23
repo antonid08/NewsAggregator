@@ -1,14 +1,23 @@
 package antonid.newsaggregator.data.local
 
+import antonid.newsaggregator.data.local.room.ArticleRoomEntityConverter
+import antonid.newsaggregator.data.local.room.ArticlesDao
 import antonid.newsaggregator.domain.model.Article
 
-class ArticlesLocalDataSource() {
+class ArticlesLocalDataSource(
+    private val articlesDao: ArticlesDao,
+    private val articleRoomEntityConverter: ArticleRoomEntityConverter,
+) {
 
-    fun getAll(): List<Article> {
-        return listOf() //todo Stub
+    suspend fun getLatest(count: Int): List<Article> {
+        return articlesDao.getLatest(count).map(articleRoomEntityConverter::convert)
     }
 
-    fun save(articles: List<Article>) {
-        // todo Stub
+    suspend fun save(articles: List<Article>) {
+        articlesDao.insertWithReplace(articles.map(articleRoomEntityConverter::convert))
+    }
+
+    suspend fun clear() {
+        articlesDao.removeAll()
     }
 }

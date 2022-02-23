@@ -10,8 +10,12 @@ class ArticlesRepositoryImpl(
     private val localDataSource: ArticlesLocalDataSource,
 ): ArticlesRepository {
 
-    override suspend fun getCachedArticles(): List<Article> =
-        localDataSource.getAll()
+    override suspend fun getCachedArticles(count: Int): List<Article> =
+        localDataSource.getLatest(count)
+
+    override suspend fun clearCache() {
+        localDataSource.clear()
+    }
 
     override suspend fun loadPage(timestamp: Long, count: Int): List<Article> {
         val remoteArticles = remoteRepository.loadPage(timestamp, count)

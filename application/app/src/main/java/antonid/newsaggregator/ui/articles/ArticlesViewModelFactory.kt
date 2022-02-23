@@ -1,9 +1,12 @@
 package antonid.newsaggregator.ui.articles
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import antonid.newsaggregator.data.ArticlesRepositoryImpl
 import antonid.newsaggregator.data.local.ArticlesLocalDataSource
+import antonid.newsaggregator.data.local.room.ArticleRoomEntityConverter
+import antonid.newsaggregator.data.local.room.getDatabase
 import antonid.newsaggregator.data.remote.ArticlesRemoteRepository
 import antonid.newsaggregator.data.remote.newsapi.NewsApiOrgRemoteDataSource
 import antonid.newsaggregator.data.remote.newsapi.converter.NewsApiArticleRetrofitConverter
@@ -13,7 +16,7 @@ import antonid.newsaggregator.data.remote.newsdata.converter.TheNewsApiComArticl
 import antonid.newsaggregator.data.remote.newsdata.retrofit.TheNewsApiComApiProvider
 import java.lang.IllegalArgumentException
 
-class ArticlesViewModelFactory: ViewModelProvider.Factory{
+class ArticlesViewModelFactory(private val context: Context): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ArticlesViewModel::class.java)) {
             val newsApiOrgRemoteDataSource = NewsApiOrgRemoteDataSource(NewsApiProvider.api, NewsApiArticleRetrofitConverter())
@@ -22,7 +25,7 @@ class ArticlesViewModelFactory: ViewModelProvider.Factory{
             )
             val articlesRepository = ArticlesRepositoryImpl(
                 ArticlesRemoteRepository(newsApiOrgRemoteDataSource, theNewsApiComRemoteDataSource),
-                ArticlesLocalDataSource()
+                ArticlesLocalDataSource(getDatabase(context).articlesDao(), ArticleRoomEntityConverter())
             )
             return ArticlesViewModel(
                 articlesRepository

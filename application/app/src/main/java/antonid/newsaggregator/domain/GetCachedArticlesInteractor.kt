@@ -8,9 +8,10 @@ import antonid.newsaggregator.domain.utils.SuspendInteractor
  * Newest articles at the top of the list.
  */
 class GetCachedArticlesInteractor(
+    private val count: Int,
     private val repository: ArticlesRepository,
 ): SuspendInteractor<List<Article>> {
 
     override suspend fun execute(): List<Article> =
-        repository.getCachedArticles()
+        repository.getCachedArticles(count)
 }

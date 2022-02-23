@@ -24,7 +24,7 @@ class GetUpdatesInteractorTest {
     @Test
     fun `Verify flow emitted if fresh articles available`() = runBlocking {
         val repository = mockk<ArticlesRepository> {
-            coEvery { getCachedArticles() } returns listOf(oldArticle)
+            coEvery { getCachedArticles(any()) } returns listOf(oldArticle)
             coEvery { loadPage(any(), any()) } returns listOf(newArticle)
         }
 
@@ -41,7 +41,7 @@ class GetUpdatesInteractorTest {
     @Test(expected = TimeoutCancellationException::class)
     fun `Verify flow not emitted before interval even if fresh articles available`() = runBlocking {
         val repository = mockk<ArticlesRepository> {
-            coEvery { getCachedArticles() } returns listOf(oldArticle)
+            coEvery { getCachedArticles(any()) } returns listOf(oldArticle)
             coEvery { loadPage(any(), any()) } returns listOf(newArticle)
         }
 
@@ -58,7 +58,7 @@ class GetUpdatesInteractorTest {
     @Test(expected = TimeoutCancellationException::class)
     fun `Verify flow not emitted if fresh articles unavailable`() = runBlocking {
         val repository = mockk<ArticlesRepository> {
-            coEvery { getCachedArticles() } returns listOf(newArticle)
+            coEvery { getCachedArticles(any()) } returns listOf(newArticle)
             coEvery { loadPage(any(), any()) } returns listOf(oldArticle)
         }
 

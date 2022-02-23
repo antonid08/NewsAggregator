@@ -30,7 +30,7 @@ class GetUpdatesInteractor(
     }
 
     private suspend fun checkUpdates() {
-        val newestCachedArticle = repository.getCachedArticles()[0]
+        val newestCachedArticle = repository.getCachedArticles(1)[0]
         val newestLoadedArticle = repository.loadPage(System.currentTimeMillis(), 1)[0]
         if (newestLoadedArticle.publishTimestamp > newestCachedArticle.publishTimestamp) {
             updatesFlow.emit(Unit)

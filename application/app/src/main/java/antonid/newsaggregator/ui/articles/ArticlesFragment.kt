@@ -26,7 +26,7 @@ class ArticlesFragment: Fragment() {
     private var binding: ArticlesFragmentBinding? = null
 
     private val viewModel: ArticlesViewModel by viewModels(
-        factoryProducer = { ArticlesViewModelFactory() }
+        factoryProducer = { ArticlesViewModelFactory(requireContext()) }
     )
 
     override fun onCreateView(
