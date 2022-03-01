@@ -48,6 +48,20 @@ class ArticlesViewModel(
         }
     }
 
+    fun refreshArticles() {
+        viewModelScope.launch {
+            runCatching {
+                LoadArticlesInteractor(Calendar.getInstance().timeInMillis, PAGE_SIZE, articlesRepository).execute()
+            }.onSuccess {
+                initialArticlesFlow.emit(Outcome.Success(it))
+            }.onFailure {
+                Log.e(TAG, "", it)
+                initialArticlesFlow.emit(Outcome.Failure())
+            }
+            initialArticlesFlow.emit(Outcome.Progress(false))
+        }
+    }
+
     fun loadArticlesPage(timestampBefore: Long) {
         viewModelScope.launch {
             articlesUpdatesFlow.emit(Outcome.Progress(true))

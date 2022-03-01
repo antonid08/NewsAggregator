@@ -73,6 +73,10 @@ class ArticlesFragment : Fragment() {
             }
         }
 
+        binding?.swipeRefresh?.setOnRefreshListener {
+            viewModel.refreshArticles()
+        }
+
         viewModel.loadInitialArticles()
 
         Paginate.with(binding?.articles, paginationCallbacks)
@@ -87,6 +91,10 @@ class ArticlesFragment : Fragment() {
         if (isInitialPage) {
             binding?.progress?.isVisible = isLoading
             binding?.articles?.isVisible = !isLoading
+        }
+
+        if (!isLoading) {
+            binding?.swipeRefresh?.isRefreshing = isLoading
         }
     }
 
