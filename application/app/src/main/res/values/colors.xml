@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!--TODO to be moved to attrs to support dark mode-->
+    <color name="default_background_color">#F0F3F6</color>
 </resources>

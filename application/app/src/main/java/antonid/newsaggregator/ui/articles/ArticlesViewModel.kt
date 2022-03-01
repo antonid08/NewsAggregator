@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class ArticlesViewModel(
@@ -24,10 +23,14 @@ class ArticlesViewModel(
         private const val PAGE_SIZE = 10
     }
 
-    private val articlesFlow = MutableSharedFlow<List<Article>>()
+    private val articlesUpdatesFlow = MutableSharedFlow<List<Article>>()
 
-    init {
+    private val isFirstPageLoadingFlow = MutableSharedFlow<Boolean>()
+    private val isNextPagesLoadingFlow = MutableSharedFlow<Boolean>()
+
+    fun loadInitialArticles() {
         viewModelScope.launch {
+            isFirstPageLoadingFlow.emit(true)
             runCatching {
                 val cachedArticles = GetCachedArticlesInteractor(CACHE_SIZE, articlesRepository).execute()
                 if (cachedArticles.isNotEmpty()) {
@@ -36,15 +39,34 @@ class ArticlesViewModel(
                     LoadArticlesInteractor(Calendar.getInstance().timeInMillis, PAGE_SIZE, articlesRepository).execute()
                 }
             }.onSuccess {
-                articlesFlow.emit(it)
+                articlesUpdatesFlow.emit(it)
             }.onFailure {
                 Log.e(TAG, "", it)
                 //todo show error
             }
+            isFirstPageLoadingFlow.emit(false)
         }
     }
 
-    fun getArticlesUpdates(): Flow<List<Article>> = articlesFlow.asSharedFlow()
+    fun loadArticlesPage(timestampBefore: Long) {
+        viewModelScope.launch {
+            isNextPagesLoadingFlow.emit(true)
+            runCatching {
+                LoadArticlesInteractor(timestampBefore, PAGE_SIZE, articlesRepository).execute()
+            }.onSuccess {
+                articlesUpdatesFlow.emit(it)
+            }.onFailure {
+                Log.e(TAG, "", it)
+                //todo show error
+            }
+            isNextPagesLoadingFlow.emit(false)
+        }
+    }
+
+    fun getArticlesUpdates(): Flow<List<Article>> = articlesUpdatesFlow.asSharedFlow()
+
+    fun getFirstPageLoadingFlow(): Flow<Boolean> = isFirstPageLoadingFlow.asSharedFlow()
+    fun getNextPageLoadingFLow(): Flow<Boolean> = isNextPagesLoadingFlow.asSharedFlow()
 
 
 }

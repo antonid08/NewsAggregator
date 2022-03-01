@@ -12,6 +12,8 @@ class ArticlesRecyclerAdapter : RecyclerView.Adapter<ArticlesRecyclerAdapter.Art
 
     private val articles = mutableListOf<Article>()
 
+    fun getArticles(): List<Article> = articles.toList()
+
     fun addArticles(articles: List<Article>) {
         this.articles.addAll(articles)
         notifyItemRangeInserted(this.articles.size - articles.size, articles.size)
