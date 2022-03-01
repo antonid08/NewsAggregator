@@ -52,7 +52,10 @@ class ArticlesFragment : Fragment() {
                 when (it) {
                     is Outcome.Progress -> setLoading(it.isLoading, true)
                     is Outcome.Success -> adapter.setArticles(it.data)
-                    is Outcome.Failure -> showError()
+                    is Outcome.Failure -> {
+                        setLoading(false, true)
+                        showError()
+                    }
                 }
             }
         }
@@ -62,7 +65,10 @@ class ArticlesFragment : Fragment() {
                 when (it) {
                     is Outcome.Progress -> setLoading(it.isLoading, false)
                     is Outcome.Success -> adapter.addArticles(it.data)
-                    is Outcome.Failure -> showError()
+                    is Outcome.Failure ->  {
+                        setLoading(false, false)
+                        showError()
+                    }
                 }
             }
         }
