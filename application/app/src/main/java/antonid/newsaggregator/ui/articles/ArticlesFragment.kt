@@ -9,14 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import antonid.newsaggregator.R
 import antonid.newsaggregator.databinding.ArticlesFragmentBinding
+import antonid.newsaggregator.ui.utils.Outcome
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import com.paginate.Paginate
 
 
-
-
-class ArticlesFragment: Fragment() {
+class ArticlesFragment : Fragment() {
 
     private var binding: ArticlesFragmentBinding? = null
 
@@ -47,22 +48,22 @@ class ArticlesFragment: Fragment() {
 
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getFirstPageLoadingFlow().collect { isLoading ->
-                this@ArticlesFragment.isLoading = isLoading
-                binding?.progress?.isVisible = isLoading
-                binding?.articles?.isVisible = !isLoading
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getNextPageLoadingFLow().collect { isLoading ->
-                this@ArticlesFragment.isLoading = isLoading
+            viewModel.getInitialArticlesUpdates().collect {
+                when (it) {
+                    is Outcome.Progress -> setLoading(it.isLoading, true)
+                    is Outcome.Success -> adapter.setArticles(it.data)
+                    is Outcome.Failure -> showError()
+                }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.getArticlesUpdates().collect {
-                adapter.addArticles(it)
+                when (it) {
+                    is Outcome.Progress -> setLoading(it.isLoading, false)
+                    is Outcome.Success -> adapter.addArticles(it.data)
+                    is Outcome.Failure -> showError()
+                }
             }
         }
 
@@ -72,6 +73,21 @@ class ArticlesFragment: Fragment() {
             .setLoadingTriggerThreshold(2)
             .addLoadingListItem(true)
             .build()
+    }
+
+    private fun setLoading(isLoading: Boolean, isInitialPage: Boolean) {
+        this.isLoading = isLoading
+
+        if (isInitialPage) {
+            binding?.progress?.isVisible = isLoading
+            binding?.articles?.isVisible = !isLoading
+        }
+    }
+
+    private fun showError() {
+        binding?.root?.let { root ->
+            Snackbar.make(root, R.string.articles_error_message, Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private var paginationCallbacks: Paginate.Callbacks = object : Paginate.Callbacks {
