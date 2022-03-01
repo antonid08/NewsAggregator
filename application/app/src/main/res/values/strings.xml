@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NewsAggregator</string>
+
+    <string name="articles_error_message">Loading failed</string>
 </resources>

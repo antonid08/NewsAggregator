@@ -10,9 +10,14 @@ import com.bumptech.glide.Glide
 
 class ArticlesRecyclerAdapter : RecyclerView.Adapter<ArticlesRecyclerAdapter.ArticleViewHolder>() {
 
-    private val articles = mutableListOf<Article>()
+    private var articles = mutableListOf<Article>()
 
     fun getArticles(): List<Article> = articles.toList()
+
+    fun setArticles(articles: List<Article>) {
+        this.articles =  articles.toMutableList()
+        notifyDataSetChanged()
+    }
 
     fun addArticles(articles: List<Article>) {
         this.articles.addAll(articles)

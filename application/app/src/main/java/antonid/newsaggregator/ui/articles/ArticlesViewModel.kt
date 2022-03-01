@@ -7,6 +7,7 @@ import antonid.newsaggregator.domain.ArticlesRepository
 import antonid.newsaggregator.domain.GetCachedArticlesInteractor
 import antonid.newsaggregator.domain.LoadArticlesInteractor
 import antonid.newsaggregator.domain.model.Article
+import antonid.newsaggregator.ui.utils.Outcome
 import antonid.newsaggregator.utils.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,14 +24,13 @@ class ArticlesViewModel(
         private const val PAGE_SIZE = 10
     }
 
-    private val articlesUpdatesFlow = MutableSharedFlow<List<Article>>()
+    private val initialArticlesFlow = MutableSharedFlow<Outcome<List<Article>>>()
+    private val articlesUpdatesFlow = MutableSharedFlow<Outcome<List<Article>>>()
 
-    private val isFirstPageLoadingFlow = MutableSharedFlow<Boolean>()
-    private val isNextPagesLoadingFlow = MutableSharedFlow<Boolean>()
 
     fun loadInitialArticles() {
         viewModelScope.launch {
-            isFirstPageLoadingFlow.emit(true)
+            initialArticlesFlow.emit(Outcome.Progress(true))
             runCatching {
                 val cachedArticles = GetCachedArticlesInteractor(CACHE_SIZE, articlesRepository).execute()
                 if (cachedArticles.isNotEmpty()) {
@@ -39,34 +39,33 @@ class ArticlesViewModel(
                     LoadArticlesInteractor(Calendar.getInstance().timeInMillis, PAGE_SIZE, articlesRepository).execute()
                 }
             }.onSuccess {
-                articlesUpdatesFlow.emit(it)
+                initialArticlesFlow.emit(Outcome.Success(it))
             }.onFailure {
                 Log.e(TAG, "", it)
-                //todo show error
+                initialArticlesFlow.emit(Outcome.Failure())
             }
-            isFirstPageLoadingFlow.emit(false)
+            initialArticlesFlow.emit(Outcome.Progress(false))
         }
     }
 
     fun loadArticlesPage(timestampBefore: Long) {
         viewModelScope.launch {
-            isNextPagesLoadingFlow.emit(true)
+            articlesUpdatesFlow.emit(Outcome.Progress(true))
             runCatching {
                 LoadArticlesInteractor(timestampBefore, PAGE_SIZE, articlesRepository).execute()
             }.onSuccess {
-                articlesUpdatesFlow.emit(it)
+                articlesUpdatesFlow.emit(Outcome.Success(it))
             }.onFailure {
                 Log.e(TAG, "", it)
-                //todo show error
+                articlesUpdatesFlow.emit(Outcome.Failure())
             }
-            isNextPagesLoadingFlow.emit(false)
+            articlesUpdatesFlow.emit(Outcome.Progress(false))
         }
     }
 
-    fun getArticlesUpdates(): Flow<List<Article>> = articlesUpdatesFlow.asSharedFlow()
+    fun getInitialArticlesUpdates(): Flow<Outcome<List<Article>>> = initialArticlesFlow.asSharedFlow()
+    fun getArticlesUpdates(): Flow<Outcome<List<Article>>> = articlesUpdatesFlow.asSharedFlow()
 
-    fun getFirstPageLoadingFlow(): Flow<Boolean> = isFirstPageLoadingFlow.asSharedFlow()
-    fun getNextPageLoadingFLow(): Flow<Boolean> = isNextPagesLoadingFlow.asSharedFlow()
 
 
 }
