@@ -10,4 +10,5 @@
 
     <!--TODO to be moved to attrs to support dark mode-->
     <color name="default_background_color">#F0F3F6</color>
+    <color name="articles_updates_notification_background">@color/purple_500</color>
 </resources>

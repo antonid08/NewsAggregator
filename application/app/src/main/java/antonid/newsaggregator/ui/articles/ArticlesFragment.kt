@@ -25,7 +25,7 @@ class ArticlesFragment : Fragment() {
         factoryProducer = { ArticlesViewModelFactory(requireContext()) }
     )
 
-    val adapter = ArticlesRecyclerAdapter()
+    private val adapter = ArticlesRecyclerAdapter()
 
     private var isLoading: Boolean = false
 
@@ -46,9 +46,8 @@ class ArticlesFragment : Fragment() {
         binding?.articles?.adapter = adapter
         binding?.articles?.layoutManager = LinearLayoutManager(requireContext())
 
-
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getInitialArticlesUpdates().collect {
+            viewModel.getInitialArticlesPageFlow().collect {
                 when (it) {
                     is Outcome.Progress -> setLoading(it.isLoading, true)
                     is Outcome.Success -> adapter.setArticles(it.data)
@@ -61,7 +60,7 @@ class ArticlesFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getArticlesUpdates().collect {
+            viewModel.getNextArticlesPageFlow().collect {
                 when (it) {
                     is Outcome.Progress -> setLoading(it.isLoading, false)
                     is Outcome.Success -> adapter.addArticles(it.data)
@@ -73,7 +72,19 @@ class ArticlesFragment : Fragment() {
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getUpdatesAvailableFlow().collect {
+                binding?.updatesAvailable?.isVisible = true
+            }
+        }
+
         binding?.swipeRefresh?.setOnRefreshListener {
+            viewModel.refreshArticles()
+        }
+
+        binding?.updatesAvailable?.setOnClickListener {
+            it.isVisible = false
+            binding?.swipeRefresh?.isRefreshing = true
             viewModel.refreshArticles()
         }
 
