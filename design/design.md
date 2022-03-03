@@ -45,7 +45,7 @@ This approach has disadvantage: if we want to process different types of excepti
 ## Data and Paging
 Data sources are encapsulated to _*DataStore_ classes. So we don't care which protocol are used.  
 Main challenge with pagination here is that all data stores can provide different pagination mechanisms. It should be encapsulatet: domain layer should provide unified pagination API. 
-**Pagination by date** looks the most suitable for our purposes. Every news have a date. Even if original data source doesn't provide such pagination, we can use its pagination mechanism and make requests until receive data with appropriate dates. 
+**Pagination by date** looks the most suitable for our purposes. Every news have a date. Even if original data source doesn't provide such pagination, it's better to find another source, because it requires much effort to combine different types of pagination.
 
 Other questions are how to pass data to UI and where to store it. 
 We need persistense storage for caching. Most common solution is to have such cache in database (we don't consider exotic solutions like save JSON in shared prefetences, use plain text files, etc). In our applciation there is no need to choose database by speed and weight. Only convenient API matters in this case. I prefer **Room** ORM because it looks really simple.  
@@ -62,7 +62,7 @@ I think `MVP` UI pattern is more suitable for such design, but we can also use `
 Since there are several data sources, i suppose we can just hide network errors from the user. Error will be shown only if all data requests failed.
 
 ## Background check for updates
-Background updates should be encapsulated as additional data sources. There will be interactors to provide `subscribe` and `unsubscribe` functionality. We still need to call these methods somewhere in the core component. It can be lifecycle callbacks of the root `Activity` or `Application`. 
+Background updates should be encapsulated as additional data sources. There will be interactors to provide periodically update functionality. 
 
 ## Main classes 
 ### Data layer
