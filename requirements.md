@@ -1,7 +1,7 @@
 # Requirements
 
 This is single screen application. On the screen user can see list of news from different sources, sorted by date (from new to old).
-Every news is represented by card containing this information: image, title, source. After click on the card, user should be redirected to the browser app.
+Every news is represented by card containing this information: image, title, source.
 
 #### Cache
 The application should use offline-first approach. When user open the app, they see cached news (or placeholder) and loader. Cache size is restricted by 200 news.
