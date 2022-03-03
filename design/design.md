@@ -73,6 +73,5 @@ Background updates should be encapsulated as additional data sources. There will
 ![Data layer class diagram](data_layer_class_diagram.drawio.png)
 ### Domain layer
 ![Domain layer class diagram](domain_layer_class_diagram.drawio.png)
-### UI layer
-![UI layer class diagram](ui_layer_class_diagram.drawio.png)
+
 
