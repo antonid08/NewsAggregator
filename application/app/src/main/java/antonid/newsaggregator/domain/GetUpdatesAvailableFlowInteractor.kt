@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.*
  *
  * @param updatesIntervalMs how often updates should be checked.
  */
-class GetUpdatesFlowInteractor(
+class GetUpdatesAvailableFlowInteractor(
     private val checkUpdatesInteractor: CheckUpdatesInteractor,
-    private val updatesIntervalMs: Long = 60_000L,
+    private val updatesIntervalMs: Long = 10_000L,
 ): Interactor<Flow<Unit>> {
 
     override fun execute(): Flow<Unit> = flow  {

@@ -84,7 +84,6 @@ class ArticlesFragment : Fragment() {
 
         binding?.updatesAvailable?.setOnClickListener {
             it.isVisible = false
-            binding?.swipeRefresh?.isRefreshing = true
             viewModel.refreshArticles()
         }
 

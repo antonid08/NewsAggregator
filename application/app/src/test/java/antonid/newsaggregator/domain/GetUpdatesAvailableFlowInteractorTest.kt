@@ -10,7 +10,7 @@ import kotlin.time.ExperimentalTime
 // flow testing with internal scope (in `GetUpdatesInteractor`) using `runTest`.
 @ExperimentalCoroutinesApi
 @ExperimentalTime
-class GetUpdatesFlowInteractorTest {
+class GetUpdatesAvailableFlowInteractorTest {
 
     @Test
     fun `Verify flow emitted if fresh articles available`() = runBlocking {
@@ -19,7 +19,7 @@ class GetUpdatesFlowInteractorTest {
             coEvery { execute() } returns true
         }
 
-        val interactor = GetUpdatesFlowInteractor(checkUpdatesInteractor, 50L)
+        val interactor = GetUpdatesAvailableFlowInteractor(checkUpdatesInteractor, 50L)
         val flow = interactor.execute()
 
         flow.test(100L) {
@@ -33,7 +33,7 @@ class GetUpdatesFlowInteractorTest {
             coEvery { execute() } returns true
         }
 
-        val interactor = GetUpdatesFlowInteractor(checkUpdatesInteractor, 100L)
+        val interactor = GetUpdatesAvailableFlowInteractor(checkUpdatesInteractor, 100L)
         val flow = interactor.execute()
 
         flow.test(50L) {
@@ -47,7 +47,7 @@ class GetUpdatesFlowInteractorTest {
             coEvery { execute() } returns false
         }
 
-        val interactor = GetUpdatesFlowInteractor(checkUpdatesInteractor, 50L)
+        val interactor = GetUpdatesAvailableFlowInteractor(checkUpdatesInteractor, 50L)
         val flow = interactor.execute()
 
         flow.test(100L) {
@@ -61,7 +61,7 @@ class GetUpdatesFlowInteractorTest {
             coEvery { execute() } returns true
         }
 
-        val interactor = GetUpdatesFlowInteractor(checkUpdatesInteractor, 50L)
+        val interactor = GetUpdatesAvailableFlowInteractor(checkUpdatesInteractor, 50L)
         val flow = interactor.execute()
 
         flow.test(1000L) {

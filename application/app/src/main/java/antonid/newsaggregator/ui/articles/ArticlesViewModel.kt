@@ -50,7 +50,7 @@ class ArticlesViewModel(
 
     init {
         viewModelScope.launch {
-            GetUpdatesFlowInteractor(
+            GetUpdatesAvailableFlowInteractor(
                 CheckUpdatesInteractor(articlesRepository),
             ).execute().collect {
                 updatesAvailableFlow.emit(Unit)
@@ -85,6 +85,7 @@ class ArticlesViewModel(
 
     fun refreshArticles() {
         viewModelScope.launch {
+            initialArticlesPageFlow.emit(Outcome.Progress(true))
             runCatching {
                 LoadArticlesInteractor(Calendar.getInstance().timeInMillis, PAGE_SIZE, articlesRepository).execute()
             }.onSuccess {
