@@ -16,7 +16,10 @@ import antonid.newsaggregator.data.remote.newsdata.converter.TheNewsApiComArticl
 import antonid.newsaggregator.data.remote.newsdata.retrofit.TheNewsApiComApiProvider
 import java.lang.IllegalArgumentException
 
-class ArticlesViewModelFactory(private val context: Context): ViewModelProvider.Factory{
+class ArticlesViewModelFactory(
+    private val context: Context,
+    private val cacheSize: Int,
+): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ArticlesViewModel::class.java)) {
             val newsApiOrgRemoteDataSource = NewsApiOrgRemoteDataSource(NewsApiProvider.api, NewsApiArticleRetrofitConverter())
@@ -25,7 +28,7 @@ class ArticlesViewModelFactory(private val context: Context): ViewModelProvider.
             )
             val articlesRepository = ArticlesRepositoryImpl(
                 ArticlesRemoteRepository(newsApiOrgRemoteDataSource, theNewsApiComRemoteDataSource),
-                ArticlesLocalDataSource(getDatabase(context).articlesDao(), ArticleRoomEntityConverter())
+                ArticlesLocalDataSource(cacheSize, getDatabase(context).articlesDao(), ArticleRoomEntityConverter())
             )
             return ArticlesViewModel(
                 articlesRepository

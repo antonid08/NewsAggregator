@@ -10,7 +10,7 @@ class CheckUpdatesInteractor(
 ): SuspendInteractor<Boolean> {
 
     override suspend fun execute(): Boolean {
-        val newestCachedArticle = repository.getCachedArticles(1).firstOrNull()
+        val newestCachedArticle = repository.getCachedArticles().firstOrNull()
         val newestLoadedArticle = repository.loadPage(System.currentTimeMillis(), 1).firstOrNull()
 
         if (newestCachedArticle == null) {

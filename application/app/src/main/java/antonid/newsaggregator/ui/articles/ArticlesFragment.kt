@@ -22,7 +22,7 @@ class ArticlesFragment : Fragment() {
     private var binding: ArticlesFragmentBinding? = null
 
     private val viewModel: ArticlesViewModel by viewModels(
-        factoryProducer = { ArticlesViewModelFactory(requireContext()) }
+        factoryProducer = { ArticlesViewModelFactory(requireContext(), ARTICLES_CACHE_SIZE) }
     )
 
     private val adapter = ArticlesRecyclerAdapter()

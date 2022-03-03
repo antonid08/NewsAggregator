@@ -24,7 +24,7 @@ class CheckUpdatesInteractorTest {
     @Test
     fun `Verify returns true if both articles present and loaded article is newer`() = runTest(UnconfinedTestDispatcher()) {
         val repository = mockk<ArticlesRepository> {
-            coEvery { getCachedArticles(any()) } returns listOf(oldArticle)
+            coEvery { getCachedArticles() } returns listOf(oldArticle)
             coEvery { loadPage(any(), any()) } returns listOf(newArticle)
         }
 
@@ -35,7 +35,7 @@ class CheckUpdatesInteractorTest {
     @Test
     fun `Verify returns false if both articles present and loaded article is older`() = runTest(UnconfinedTestDispatcher()) {
         val repository = mockk<ArticlesRepository> {
-            coEvery { getCachedArticles(any()) } returns listOf(newArticle)
+            coEvery { getCachedArticles() } returns listOf(newArticle)
             coEvery { loadPage(any(), any()) } returns listOf(oldArticle)
         }
 
@@ -46,7 +46,7 @@ class CheckUpdatesInteractorTest {
     @Test
     fun `Verify returns false if both articles present and they have same publish time`() = runTest(UnconfinedTestDispatcher()) {
         val repository = mockk<ArticlesRepository> {
-            coEvery { getCachedArticles(any()) } returns listOf(newArticle)
+            coEvery { getCachedArticles() } returns listOf(newArticle)
             coEvery { loadPage(any(), any()) } returns listOf(newArticle)
         }
 
@@ -57,7 +57,7 @@ class CheckUpdatesInteractorTest {
     @Test
     fun `Verify returns false only cached article present`() = runTest(UnconfinedTestDispatcher()) {
         val repository = mockk<ArticlesRepository> {
-            coEvery { getCachedArticles(any()) } returns listOf(newArticle)
+            coEvery { getCachedArticles() } returns listOf(newArticle)
             coEvery { loadPage(any(), any()) } returns listOf()
         }
 
@@ -68,7 +68,7 @@ class CheckUpdatesInteractorTest {
     @Test
     fun `Verify returns true only loaded article present`() = runTest(UnconfinedTestDispatcher()) {
         val repository = mockk<ArticlesRepository> {
-            coEvery { getCachedArticles(any()) } returns listOf()
+            coEvery { getCachedArticles() } returns listOf()
             coEvery { loadPage(any(), any()) } returns listOf(newArticle)
         }
 
@@ -79,7 +79,7 @@ class CheckUpdatesInteractorTest {
     @Test
     fun `Verify returns false both if there are no articles present`() = runTest(UnconfinedTestDispatcher()) {
         val repository = mockk<ArticlesRepository> {
-            coEvery { getCachedArticles(any()) } returns listOf()
+            coEvery { getCachedArticles() } returns listOf()
             coEvery { loadPage(any(), any()) } returns listOf()
         }
 

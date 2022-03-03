@@ -18,7 +18,6 @@ class ArticlesViewModel(
 ): ViewModel() {
 
     companion object {
-        private const val CACHE_SIZE = 50
         private const val PAGE_SIZE = 10
     }
 
@@ -50,10 +49,14 @@ class ArticlesViewModel(
 
     init {
         viewModelScope.launch {
-            GetUpdatesAvailableFlowInteractor(
-                CheckUpdatesInteractor(articlesRepository),
-            ).execute().collect {
-                updatesAvailableFlow.emit(Unit)
+            kotlin.runCatching {
+                GetUpdatesAvailableFlowInteractor(
+                    CheckUpdatesInteractor(articlesRepository),
+                ).execute().collect {
+                    updatesAvailableFlow.emit(Unit)
+                }
+            }.onFailure {
+                Log.w(TAG, "Check for updates failed", it)
             }
         }
     }
@@ -62,7 +65,7 @@ class ArticlesViewModel(
         viewModelScope.launch {
             initialArticlesPageFlow.emit(Outcome.Progress(true))
             runCatching {
-                val cachedArticles = GetCachedArticlesInteractor(CACHE_SIZE, articlesRepository).execute()
+                val cachedArticles = GetCachedArticlesInteractor(articlesRepository).execute()
                 if (cachedArticles.isNotEmpty()) {
                     launch {
                         if (CheckUpdatesInteractor(articlesRepository).execute()) {

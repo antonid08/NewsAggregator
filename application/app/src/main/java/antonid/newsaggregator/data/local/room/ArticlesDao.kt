@@ -9,13 +9,13 @@ import antonid.newsaggregator.data.local.room.entity.ArticleRoomEntity
 @Dao
 interface ArticlesDao {
 
-    @Query("SELECT * FROM ArticleRoomEntity ORDER BY publishTimestamp DESC LIMIT :count")
-    suspend fun getLatest(count: Int): List<ArticleRoomEntity>
+    @Query("SELECT * FROM ArticleRoomEntity ORDER BY publishTimestamp DESC")
+    suspend fun getLatest(): List<ArticleRoomEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWithReplace(articles: List<ArticleRoomEntity>)
 
-    @Query("DELETE FROM ArticleRoomEntity")
-    suspend fun removeAll()
+    @Query("DELETE FROM ArticleRoomEntity WHERE publishTimestamp < :timestamp ")
+    suspend fun removeOlderThan(timestamp: Long)
 
 }
