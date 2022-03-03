@@ -41,6 +41,10 @@ Rules are:
 
 This approach has disadvantage: if we want to process different types of exceptions in different ways, there might be a problem. E.g. if we want to log to Firebase (or its analog) all exceptions except of network-related. This will require additional design and effort, but that's the price that we pay for convenience.
 
+## DI
+For time saving purposes, no DI frameworks will be used. 
+If it was a real project, most likely **Koin*** would be used, because it's lightweight and its disadvantages doesn't affect such small apps.
+
 # News feature design
 ## Data and Paging
 Data sources are encapsulated to _*DataStore_ classes. So we don't care which protocol are used.  
